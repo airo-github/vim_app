@@ -140,8 +140,7 @@
 
     function showResult() {
       scoreDisplay.textContent = 'スコア: ' + score;
-      twitterLink.href = 'https://twitter.com/intent/tweet?text=私のスコアは' + score + '点でした！';
-
+      twitterLink.href = 'https://twitter.com/intent/tweet?text=私のスコアは' + score + '点でした！' + "%0D%0A" + 'https://vim-app.onrender.com';
       resultDiv.style.display = 'block';
       twitterLink.style.display = 'block';
     }
