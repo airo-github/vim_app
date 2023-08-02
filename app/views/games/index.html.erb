@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>シューティングゲーム</title>
+</head>
+<body>
+  <canvas id="gameCanvas" width="400" height="400" style="border: 1px solid black;"></canvas>
+  <button id="startButton">スタート</button>
+  <div id="instructions">
+    <p>操作方法：</p>
+    <p>h: 左に移動</p>
+    <p>j: 下に移動</p>
+    <p>k: 上に移動</p>
+    <p>l: 右に移動</p>
+  </div>
+  <div id="result" style="display: none;">
+    <p id="scoreDisplay"></p>
+    <a id="twitterLink" href="#" target="_blank" style="display: none;">ツイッターで結果をシェア</a>
+    <button id="restartButton">リスタート</button>
+  </div>
+
+  <script>
+    // ゲームの変数
+    let playerX = 200;
+    let playerY = 200;
+    let playerSize = 20;
+    let enemyX;
+    let enemyY;
+    let enemySize = 20;
+    let enemySpeedX;
+    let enemySpeedY;
+    let score = 0;
+    let isGameStarted = false;
+
+    // ゲームキャンバスの取得
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+
+    // キー入力を受け取るイベントリスナーの設定
+    document.addEventListener('keydown', function(event) {
+      if (isGameStarted) {
+        const key = event.key;
+        if (key === 'h' && playerX > 0) {
+          playerX -= 10;
+        } else if (key === 'j' && playerY < canvas.height - playerSize) {
+          playerY += 10;
+        } else if (key === 'k' && playerY > 0) {
+          playerY -= 10;
+        } else if (key === 'l' && playerX < canvas.width - playerSize) {
+          playerX += 10;
+        }
+      }
+    });
+
+    // スタートボタンのクリックイベントリスナーを設定
+    const startButton = document.getElementById('startButton');
+    const instructionsDiv = document.getElementById('instructions');
+    const resultDiv = document.getElementById('result');
+    const scoreDisplay = document.getElementById('scoreDisplay');
+    const twitterLink = document.getElementById('twitterLink');
+
+    startButton.addEventListener('click', function() {
+      isGameStarted = true;
+      startButton.style.display = 'none';
+      instructionsDiv.style.display = 'none';
+      resultDiv.style.display = 'none';
+      score = 0; // ゲームをリセット
+      gameLoop();
+    });
+
+    // ゲームのメインループ
+    function gameLoop() {
+      if (isGameStarted) {
+        // 敵の初期位置と速度をランダムに設定
+        if (!enemyX || !enemyY) {
+          const direction = Math.floor(Math.random() * 4); // 0から3の乱数を取得
+          if (direction === 0) { // 上方向から出現
+            enemyX = Math.random() * (canvas.width - enemySize);
+            enemyY = 0;
+            enemySpeedX = Math.random() * 5 + 5;
+            enemySpeedY = Math.random() * 5 + 5;
+          } else if (direction === 1) { // 右方向から出現
+            enemyX = canvas.width - enemySize;
+            enemyY = Math.random() * (canvas.height - enemySize);
+            enemySpeedX = -(Math.random() * 5 + 5);
+            enemySpeedY = Math.random() * 5 + 5;
+          } else if (direction === 2) { // 下方向から出現
+            enemyX = Math.random() * (canvas.width - enemySize);
+            enemyY = canvas.height - enemySize;
+            enemySpeedX = Math.random() * 5 + 5;
+            enemySpeedY = -(Math.random() * 5 + 5);
+          } else { // 左方向から出現
+            enemyX = 0;
+            enemyY = Math.random() * (canvas.height - enemySize);
+            enemySpeedX = Math.random() * 5 + 5;
+            enemySpeedY = Math.random() * 5 + 5;
+          }
+        }
+
+        // 敵の移動
+        enemyX += enemySpeedX;
+        enemyY += enemySpeedY;
+
+        // 敵が画面外に出たら再度ランダムに出現
+        if (enemyX < 0 || enemyX > canvas.width || enemyY < 0 || enemyY > canvas.height) {
+          enemyX = undefined;
+          enemyY = undefined;
+          score++;
+        }
+
+        // 衝突判定
+        if (
+          playerX < enemyX + enemySize &&
+          playerX + playerSize > enemyX &&
+          playerY < enemyY + enemySize &&
+          playerY + playerSize > enemyY
+        ) {
+          isGameStarted = false;
+          showResult();
+        }
+
+        // 描画
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = 'blue';
+        ctx.fillRect(playerX, playerY, playerSize, playerSize);
+
+        ctx.fillStyle = 'red';
+        ctx.fillRect(enemyX, enemyY, enemySize, enemySize);
+
+        // スコアの表示
+        ctx.fillStyle = 'black';
+        ctx.font = '20px Arial';
+        ctx.fillText('Score: ' + score, 10, 30);
+
+        requestAnimationFrame(gameLoop);
+      }
+    }
+
+    function showResult() {
+      scoreDisplay.textContent = 'スコア: ' + score;
+      twitterLink.href = 'https://twitter.com/intent/tweet?text=私のスコアは' + score + '点でした！シューティングゲームで遊んでみてください!';
+
+      resultDiv.style.display = 'block';
+      twitterLink.style.display = 'block';
+    }
+
+    const restartButton = document.getElementById('restartButton');
+    restartButton.addEventListener('click', function() {
+      isGameStarted = true;
+      resultDiv.style.display = 'none';
+      score = 0; // ゲームをリセット
+      enemies = []; // 敵の弾丸配列をリセット
+      gameLoop();
+    });
+  </script>
+</body>
+</html>
