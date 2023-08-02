@@ -146,11 +146,16 @@
     }
 
     const restartButton = document.getElementById('restartButton');
-    restartButton.addEventListener('click', function() {
+      restartButton.addEventListener('click', function() {
       isGameStarted = true;
       resultDiv.style.display = 'none';
-      score = 0; // ゲームをリセット
-      enemies = []; // 敵の弾丸配列をリセット
+      score = 0; // スコアをリセット
+      enemies = []; // 敵の配列をリセット（必要に応じて）
+
+      // プレイヤーの位置をキャンバスの中央にリセット
+      playerX = canvas.width / 2 - playerSize / 2;
+      playerY = canvas.height / 2 - playerSize / 2;
+
       gameLoop();
     });
   </script>
