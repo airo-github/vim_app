@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>シューティングゲーム</title>
+  <title>Vim操作練習</title>
 </head>
 <body>
   <canvas id="gameCanvas" width="400" height="400" style="border: 1px solid black;"></canvas>
   <button id="startButton">スタート</button>
   <div id="instructions">
+    <p>青：プレイヤー　赤：敵</p>
+    <p>Vim操作で敵から避けてください</p>
     <p>操作方法：</p>
     <p>h: 左に移動</p>
     <p>j: 下に移動</p>
@@ -138,7 +140,7 @@
 
     function showResult() {
       scoreDisplay.textContent = 'スコア: ' + score;
-      twitterLink.href = 'https://twitter.com/intent/tweet?text=私のスコアは' + score + '点でした！シューティングゲームで遊んでみてください!';
+      twitterLink.href = 'https://twitter.com/intent/tweet?text=私のスコアは' + score + '点でした！';
 
       resultDiv.style.display = 'block';
       twitterLink.style.display = 'block';
